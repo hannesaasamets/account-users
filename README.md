@@ -13,8 +13,8 @@ Please share your solution with us in the form of a public Git repository.
 
 ### Tasks
 
-* Implement the given UI on a level of detail you deem necessary. Feel free to pick your own UI framework and libraries, preferrably something that is widely used like Vue or React, etc.
-* UI has to be performant - feel free pick your approach on loading the data like creating a light dummy API interface around it or something totally different.
+* Fully implement the given UI on a level of functional detail you deem necessary. Feel free to pick your own UI framework and libraries, preferrably something that is widely used like Vue or React, etc.
+* UI has to be performant - feel free pick your approach on loading **all the data** like creating a light dummy API interface around it or something totally different.
 
 ### Bonus
 * Host it somewhere - the choice is yours.
