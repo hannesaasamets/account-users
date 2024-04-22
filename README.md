@@ -1,20 +1,61 @@
-# Frontend Engineer Test Task
+# account-users
 
-As a test task for [Klaus](https://www.klausapp.com) frontend engineering position, we ask our candidates to build the following small part of the users list using provided static data.
+This template should help get you started developing with Vue 3 in Vite.
 
-<img src="./reference.png" alt="Reference" width="780" />
+## Recommended IDE Setup
 
-Reference design is hosted in [Figma](https://www.figma.com/) (account is needed for Inspect mode):
-https://www.figma.com/file/OXpV1JmHeq9AMZqSWpC3tL/FE-Test-Task?node-id=1%3A528
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-Static JSON list of fake users is in this repository ([`users.json`](users.json)).
+## Type Support for `.vue` Imports in TS
 
-Please share your solution with us in the form of a public Git repository.
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-### Tasks
+## Customize configuration
 
-* Fully implement the given UI on a level of functional detail you deem necessary. Feel free to pick your own UI framework and libraries, preferrably something that is widely used like Vue or React, etc.
-* UI has to be performant - feel free pick your approach on loading **all the data** like creating a light dummy API interface around it or something totally different.
+See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-### Bonus
-* Host it somewhere - the choice is yours.
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
+```
+
+### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+
+```sh
+npm run test:e2e:dev
+```
+
+This runs the end-to-end tests against the Vite development server.
+It is much faster than the production build.
+
+But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+
+```sh
+npm run build
+npm run test:e2e
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
