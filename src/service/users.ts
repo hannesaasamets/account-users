@@ -1,5 +1,4 @@
-{
-  "users": [
+export default [
     {
       "id": 10001,
       "name": "Geraldine Daniel",
@@ -35000,5 +34999,4 @@
       "avatar": "https://images.pexels.com/photos/432580/pexels-photo-432580.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb",
       "role": "ADMIN"
     }
-  ]
-}
+];
