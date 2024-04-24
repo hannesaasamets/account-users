@@ -21,14 +21,16 @@ export const UserService = {
     return Promise.resolve(this.getData());
   },
 
-  getUsers(params) {
+  getUsers(params = {}) {
     const queryParams = params
       ? Object.entries(params)
-        .map((key, value) =>
+        .map(([key, value]) => // eslint-disable-line
           `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
         .join('&')
       : '';
 
-    return fetch(`/users?${queryParams}`).then((res) => res.json());
+    const uri = `/users?${queryParams}`;
+
+    return fetch(uri).then((res) => res.json());
   },
 };

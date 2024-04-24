@@ -15,4 +15,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      '/users': 'http://localhost:3000',
+      '/reset-users': 'http://localhost:3000',
+    },
+  },
 });

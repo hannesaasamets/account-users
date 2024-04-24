@@ -12,36 +12,38 @@ fastify.get('/users', async (request, reply) => {
     offset = 0,
     limit = users.length,
     filter = '',
-    sortColumn = 'role',
-    sortDirection = 'asc',
+    sortField = 'role',
+    sortOrder = 'asc',
   } = request.query;
 
   const filterLowerCaseTrimmed = filter.toLowerCase().trim();
+
   const filteredUsers = filterLowerCaseTrimmed
     ? users.filter(user =>
       user.name.toLowerCase().includes(filterLowerCaseTrimmed) ||
             user.email.toLowerCase().includes(filterLowerCaseTrimmed) ||
             user.role.toLowerCase().includes(filterLowerCaseTrimmed))
-    : users;
+    : users.concat();
 
-  const sortedUsers = [
-    ...filteredUsers,
-  ].sort((a, b) => {
-    const columnA = String(a[sortColumn]).toLowerCase();
-    const columnB = String(b[sortColumn]).toLowerCase();
+  filteredUsers.sort((a, b) => {
+    const columnA = String(a[sortField]).toLowerCase();
+    const columnB = String(b[sortField]).toLowerCase();
 
-    return sortDirection === 'desc'
+    return sortOrder === 'desc'
       ? columnB.localeCompare(columnA)
       : columnA.localeCompare(columnB);
   });
 
   const startIndex = parseInt(offset);
   const endIndex = startIndex + parseInt(limit);
-  const paginatedUsers = sortedUsers.slice(startIndex, endIndex);
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
   reply.send({
     users: paginatedUsers,
-    totalRecords: paginatedUsers.length,
+    offset,
+    limit: paginatedUsers.length,
+    totalRecords: filteredUsers.length,
+    sortField,
   });
 });
 
