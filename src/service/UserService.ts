@@ -23,11 +23,12 @@ export const UserService = {
 
   getUsers(params) {
     const queryParams = params
-      ? Object.keys(params)
-        .map((k) => `${encodeURIComponent(k) }=${ encodeURIComponent(params[k])}`)
+      ? Object.entries(params)
+        .map((key, value) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
         .join('&')
       : '';
 
-    return fetch(`https://www.primefaces.org/data/customers?${ queryParams}`).then((res) => res.json());
+    return fetch(`/users?${queryParams}`).then((res) => res.json());
   },
 };

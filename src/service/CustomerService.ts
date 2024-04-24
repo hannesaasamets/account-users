@@ -23,8 +23,9 @@ export const CustomerService = {
 
   getCustomers(params) {
     const queryParams = params
-      ? Object.keys(params)
-        .map((k) => `${encodeURIComponent(k) }=${ encodeURIComponent(params[k])}`)
+      ? Object.entries(params)
+        .map((key, value) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
         .join('&')
       : '';
 

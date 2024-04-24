@@ -6,13 +6,6 @@ const fastify = Fastify({
   logger: true,
 });
 
-// Endpoint to reset users to initial state
-fastify.delete('/reset-users', async (request, reply) => {
-  users.length = 0;
-  users.push(...structuredClone(Users));
-  reply.code(200).send(); // Respond with HTTP 204 No Content
-});
-
 // Endpoint to retrieve users with pagination, filtering, and sorting
 fastify.get('/users', async (request, reply) => {
   const {
@@ -46,7 +39,10 @@ fastify.get('/users', async (request, reply) => {
   const endIndex = startIndex + parseInt(limit);
   const paginatedUsers = sortedUsers.slice(startIndex, endIndex);
 
-  reply.send(paginatedUsers);
+  reply.send({
+    users: paginatedUsers,
+    totalRecords: paginatedUsers.length,
+  });
 });
 
 // Endpoint for bulk editing
@@ -113,7 +109,13 @@ fastify.delete('/users', async (request, reply) => {
   }); // HTTP 204 No Content
 });
 
-// Run the server!
+// Endpoint to reset users to initial state
+fastify.delete('/reset-users', async (request, reply) => {
+  users.length = 0;
+  users.push(...structuredClone(Users));
+  reply.code(200).send(); // Respond with HTTP 204 No Content
+});
+
 try {
   await fastify.listen({
     port: 3000,

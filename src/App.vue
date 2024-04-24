@@ -117,7 +117,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, onMounted } from 'vue';
   import { CustomerService } from '@/service/CustomerService';
 
@@ -162,6 +162,8 @@
   });
   const lazyParams = ref({});
   const loadLazyData = (event) => {
+    console.log('loadLazyData', event);
+
     loading.value = true;
     lazyParams.value = {
       ...lazyParams.value,
@@ -179,14 +181,20 @@
     }, Math.random() * 1000 + 250);
   };
   const onPage = (event) => {
+    console.log('onPage', event);
+
     lazyParams.value = event;
     loadLazyData(event);
   };
   const onSort = (event) => {
+    console.log('onSort', event);
+
     lazyParams.value = event;
     loadLazyData(event);
   };
   const onFilter = (event) => {
+    console.log('onFilter', event);
+
     lazyParams.value.filters = filters.value;
     loadLazyData(event);
   };
