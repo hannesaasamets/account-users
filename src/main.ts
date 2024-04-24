@@ -1,5 +1,5 @@
 import 'primeicons/primeicons.css';
-import './assets/main.css'
+import './assets/main.css';
 
 import { createApp } from 'vue';
 import App from '@/App.vue';
@@ -34,7 +34,7 @@ import DataView from 'primevue/dataview';
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions';
 import DeferredContent from 'primevue/deferredcontent';
 import Dialog from 'primevue/dialog';
-import DialogService from 'primevue/dialogservice'
+import DialogService from 'primevue/dialogservice';
 import Divider from 'primevue/divider';
 import Dock from 'primevue/dock';
 import Dropdown from 'primevue/dropdown';
@@ -106,12 +106,15 @@ import VirtualScroller from 'primevue/virtualscroller';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import ThemeConfigurator from './components/ThemeConfigurator.vue';
 import Lara from './presets/lara';
-import Wind from './presets/wind';
 import appState from './plugins/appState.js';
 
 const app = createApp(App);
 
-app.use(PrimeVue, { ripple: true , unstyled: true, pt: Lara });
+app.use(PrimeVue, {
+  ripple: true,
+  unstyled: true,
+  pt: Lara,
+});
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(DialogService);

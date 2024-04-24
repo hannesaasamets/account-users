@@ -2,9 +2,9 @@
 export default {
   darkMode: 'class',
   content: [
-    "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
-    "./src/*/.{vue,js,ts,jsx,tsx}",
+    './index.html',
+    './src/**/*.{vue,js,ts,jsx,tsx}',
+    './src/*/.{vue,js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -31,10 +31,9 @@ export default {
         'surface-700': 'rgb(var(--surface-700))',
         'surface-800': 'rgb(var(--surface-800))',
         'surface-900': 'rgb(var(--surface-900))',
-        'surface-950': 'rgb(var(--surface-950))'
+        'surface-950': 'rgb(var(--surface-950))',
       },
     },
   },
   plugins: [],
-}
-
+};
