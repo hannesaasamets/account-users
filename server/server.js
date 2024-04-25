@@ -47,7 +47,6 @@ fastify.get('/users', async (request, reply) => {
   });
 });
 
-// Endpoint for bulk editing
 fastify.patch('/users', async (request, reply) => {
   const { body } = request;
 
@@ -63,12 +62,9 @@ fastify.patch('/users', async (request, reply) => {
     }
   });
 
-  reply.send({
-    message: 'Bulk edit users completed',
-  });
+  reply.send(body);
 });
 
-// Endpoint to update a user
 fastify.patch('/users/:userId', async (request, reply) => {
   const { userId } = request.params;
   const { body } = request;
@@ -77,9 +73,7 @@ fastify.patch('/users/:userId', async (request, reply) => {
 
   if (user) {
     Object.assign(user, body);
-    reply.send({
-      message: 'User updated successfully',
-    });
+    reply.send(user);
   } else {
     reply.code(404).send({
       message: 'User not found',
@@ -87,7 +81,6 @@ fastify.patch('/users/:userId', async (request, reply) => {
   }
 });
 
-// Endpoint to delete a specific user
 fastify.delete('/users/:userId', async (request, reply) => {
   const { userId } = request.params;
 
@@ -103,16 +96,7 @@ fastify.delete('/users/:userId', async (request, reply) => {
   }
 });
 
-// Endpoint to delete all users
-fastify.delete('/users', async (request, reply) => {
-  users.length = 0;
-  reply.code(204).send({
-    message: 'All users deleted successfully',
-  }); // HTTP 204 No Content
-});
-
-// Endpoint to reset users to initial state
-fastify.delete('/reset-users', async (request, reply) => {
+fastify.get('/reset-users', async (request, reply) => {
   users.length = 0;
   users.push(...structuredClone(Users));
   reply.code(200).send(); // Respond with HTTP 204 No Content

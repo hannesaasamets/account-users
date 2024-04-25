@@ -1,27 +1,7 @@
-import users from '../../server/users.js';
+import type { QueryParams, User } from '@/App.vue';
 
 export const UserService = {
-  getData() {
-    return users;
-  },
-
-  getUsersSmall() {
-    return Promise.resolve(this.getData().slice(0, 10));
-  },
-
-  getUsersMedium() {
-    return Promise.resolve(this.getData().slice(0, 50));
-  },
-
-  getUsersLarge() {
-    return Promise.resolve(this.getData().slice(0, 200));
-  },
-
-  getUsersXLarge() {
-    return Promise.resolve(this.getData());
-  },
-
-  getUsers(params = {}) {
+  getUsers(params: QueryParams) {
     const queryParams = params
       ? Object.entries(params)
         .map(([key, value]) => // eslint-disable-line
@@ -32,5 +12,39 @@ export const UserService = {
     const uri = `/users?${queryParams}`;
 
     return fetch(uri).then((res) => res.json());
+  },
+  editUser(user: User) {
+    const options = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    };
+
+    const uri = `/users/${user.id}`;
+
+    return fetch(uri, options).then((res) => res.json());
+  },
+  editUsers(users: Partial<User>[]) {
+    const options = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(users),
+    };
+
+    const uri = `/users`;
+
+    return fetch(uri, options).then((res) => res.json());
+  },
+  deleteUsers(users: Partial<User>[]) {
+    const options = {
+      method: 'DELETE',
+    };
+
+    return Promise.all(users.map(user =>
+      fetch(`/users/${user.id}`, options).then(({ status }) => status)));
   },
 };

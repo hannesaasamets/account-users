@@ -17,34 +17,59 @@
       </span>
     </div>
     <DataTable
-      :value="customers"
+      :value="users"
       lazy
       paginator
+      edit-mode="row"
+      v-model:editingRows="editingRows"
+      @row-edit-save="onRowEditSave"
       :first="queryParams.offset"
       :rows="pageSize"
       v-model:filters="filters"
       data-key="id"
       :total-records="totalRecords"
-      :loading="loading"
+      :loading="isLoading"
       @page="onPage"
       @sort="onSort"
       :global-filter-fields="['name', 'email', 'role']"
-      selection-mode="multiple"
-      v-model:selection="selectedCustomers"
+      _selection-mode="multiple"
+      v-model:selection="selectedUsers"
       :select-all="allPageItemsSelected"
       @select-all-change="onSelectAllChange"
       table-style="min-width: 75rem"
     >
       <template #header>
         <div>
-          {{ selectedCustomers.length }} users selected
+          {{ selectedUsers.length }} users selected
           <Button
+            :disabled="selectedUsers.length === 0"
+            v-if="!isEditingGlobal"
             icon="pi pi-pencil"
             label="Edit"
+            @click="isEditingGlobal = !isEditingGlobal"
           />
+          <Dropdown
+            v-else
+            v-model="globalEditRoles"
+            :options="roles"
+            option-label="label"
+            option-value="value"
+            placeholder="Select a Status"
+            @change="onGlobalEditRolesChange"
+          >
+            <template #option="slotProps">
+              <Tag
+                :value="slotProps.option.label"
+                :severity="getSeverity(slotProps.option.value)"
+              />
+            </template>
+          </Dropdown>
+
           <Button
+            :disabled="selectedUsers.length === 0"
             icon="pi pi-trash"
             label="Delete"
+            @click="onGlobalDeleteUsers"
           />
         </div>
       </template>
@@ -55,21 +80,23 @@
       <Column header-style="width: 3rem" />
       <Column
         field="name"
-        header="Name"
+        header="User"
         sortable
       >
         <template #body="{ data }">
           <div class="flex items-center gap-2">
-            <img style="width: 32px" />
-            <span>{{ data.name }}</span>
+            <img style="width: 32px; height: 32px; border-radius: 100%; background: #eee" />
+            <span>
+              <p>{{ data.name }}</p>
+              <p>{{ data.email }}</p>
+            </span>
           </div>
         </template>
+        <template #editor="{ data }">
+          <InputText v-model="data.name" />
+          <InputText v-model="data.email" />
+        </template>
       </Column>
-      <Column
-        field="email"
-        header="E-mail"
-        sortable
-      />
       <Column
         field="role"
         header="Permission"
@@ -78,11 +105,32 @@
       >
         <template #body="{ data }">
           <Tag
-            :value="data.role"
+            :value="roles.find(role => role.value === data.role)?.label"
             :severity="getSeverity(data.role)"
           />
         </template>
+        <template #editor="{ data, field }">
+          <Dropdown
+            v-model="data[field]"
+            :options="roles"
+            option-label="label"
+            option-value="value"
+            placeholder="Select a Status"
+          >
+            <template #option="slotProps">
+              <Tag
+                :value="slotProps.option.label"
+                :severity="getSeverity(slotProps.option.value)"
+              />
+            </template>
+          </Dropdown>
+        </template>
       </Column>
+      <Column
+        :row-editor="true"
+        style="width: 10%; min-width: 8rem"
+        body-style="text-align:center"
+      />
     </DataTable>
   </div>
 </template>
@@ -91,16 +139,32 @@
   import { ref, onMounted, reactive, computed } from 'vue';
   import { UserService } from '@/service/UserService';
   import { FilterMatchMode } from 'primevue/api';
-  import type { DataTablePageEvent, DataTableSelectAllChangeEvent, DataTableSortEvent } from 'primevue/datatable';
+  import type {
+    DataTablePageEvent,
+    DataTableRowEditSaveEvent,
+    DataTableSelectAllChangeEvent,
+    DataTableSortEvent,
+  } from 'primevue/datatable';
+
+  export type User = {
+    'id': number;
+    'name': string;
+    'email': string;
+    'avatar': string;
+    'role': keyof typeof severityMap;
+  };
 
   onMounted(() => {
     loadLazyData();
   });
 
-  const loading = ref(false);
+  const isEditingGlobal = ref(false);
+  const globalEditRoles = ref();
+  const isLoading = ref(false);
   const totalRecords = ref(0);
-  const customers = ref([]);
-  const selectedCustomers = ref([]);
+  const users = ref<User[]>([]);
+  const selectedUsers = ref<User[]>([]);
+  const editingRows = ref([]);
   const filters = reactive({
     global: {
       value: '',
@@ -111,25 +175,28 @@
   const queryParams = reactive({
     offset: 0,
     limit: pageSize,
-    sortField: '',
-    sortOrder: '',
+    sortField: '' as 'name' | 'email' | 'role' | 'id',
+    sortOrder: '' as 'asc' | 'desc',
     filter: filters.global.value,
   });
+
+  export type QueryParams = typeof queryParams;
+
   const loadLazyData = () => {
-    selectedCustomers.value = [];
-    loading.value = true;
+    selectedUsers.value = [];
+    isLoading.value = true;
     queryParams.limit = pageSize;
 
     setTimeout(() => {
       UserService
         .getUsers(queryParams)
         .then(response => {
-          customers.value = response.users;
+          users.value = response.users;
           totalRecords.value = parseInt(response.totalRecords);
           queryParams.offset = parseInt(response.offset);
           queryParams.limit = parseInt(response.limit);
 
-          loading.value = false;
+          isLoading.value = false;
 
           console.log('response', response);
         });
@@ -141,7 +208,7 @@
     loadLazyData();
   };
   const onSort = (event: DataTableSortEvent) => {
-    queryParams.sortField = event.sortField as string;
+    queryParams.sortField = event.sortField as typeof queryParams.sortField;
     queryParams.sortOrder = event.sortOrder === -1
       ? 'desc'
       : 'asc';
@@ -156,19 +223,65 @@
     loadLazyData();
   };
   const onSelectAllChange = (event: DataTableSelectAllChangeEvent) => {
-    selectedCustomers.value = event.checked
-      ? customers.value
+    selectedUsers.value = event.checked
+      ? users.value
       : [];
   };
   const allPageItemsSelected = computed(() =>
-    selectedCustomers.value.length === customers.value.length);
+    selectedUsers.value.length === users.value.length);
 
-  const statusMap = {
+  const roles = [
+    {
+      value: 'ACCOUNT_MANAGER',
+      label: 'Account manager',
+    },
+    {
+      value: 'ADMIN',
+      label: 'Admin',
+    },
+    {
+      value: 'AGENT',
+      label: 'Agent',
+    },
+    {
+      value: 'EXTERNAL_REVIEWER',
+      label: 'External reviewer',
+    },
+  ];
+  const severityMap = {
     'ACCOUNT_MANAGER': 'danger',
     'ADMIN': 'success',
     'AGENT': 'info',
     'EXTERNAL_REVIEWER': 'warning',
   };
-  const getSeverity = (status: keyof typeof statusMap) =>
-    statusMap[status];
+  const getSeverity = (status: User['role']) =>
+    severityMap[status];
+  const onRowEditSave = ({ newData, index }: DataTableRowEditSaveEvent) => {
+    UserService.editUser(newData).then(persistedUser => {
+      users.value[index] = persistedUser;
+    });
+  };
+  const onGlobalEditRolesChange = () => {
+    editingRows.value = [];
+
+    const editedUsers = selectedUsers.value.map(({ id }) => ({
+      id,
+      role: globalEditRoles.value,
+    }));
+
+    UserService.editUsers(editedUsers).then((persistedUsers: User[]) => {
+      users.value.forEach(user => {
+        const persistedUser = persistedUsers.find(({ id }) => id === user.id);
+
+        if (persistedUser) {
+          Object.assign(user, persistedUser);
+        }
+      });
+    });
+
+    isEditingGlobal.value = false;
+  };
+  const onGlobalDeleteUsers = () => UserService
+    .deleteUsers(selectedUsers.value)
+    .then(loadLazyData);
 </script>
