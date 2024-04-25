@@ -69,7 +69,7 @@
             :disabled="selectedUsers.length === 0"
             icon="pi pi-trash"
             label="Delete"
-            @click="onGlobalDeleteUsers"
+            @click="onGlobalDelete(selectedUsers)"
           />
         </div>
       </template>
@@ -126,11 +126,29 @@
           </Dropdown>
         </template>
       </Column>
-      <Column
-        :row-editor="true"
-        style="width: 10%; min-width: 8rem"
-        body-style="text-align:center"
-      />
+      <Column header="">
+        <template #body="{ data, editorInitCallback }">
+          <Button
+            label="Edit"
+            icon="pi pi-pencil"
+            @click="editorInitCallback"
+          />
+          <Button
+            icon="pi pi-trash"
+            @click="onDeleteRow(data)"
+          />
+        </template>
+        <template #editor="{ editorSaveCallback, editorCancelCallback }">
+          <Button
+            icon="pi pi-check"
+            @click="editorSaveCallback"
+          />
+          <Button
+            icon="pi pi-times"
+            @click="editorCancelCallback"
+          />
+        </template>
+      </Column>
     </DataTable>
   </div>
 </template>
@@ -164,7 +182,7 @@
   const totalRecords = ref(0);
   const users = ref<User[]>([]);
   const selectedUsers = ref<User[]>([]);
-  const editingRows = ref([]);
+  const editingRows = ref<User[]>([]);
   const filters = reactive({
     global: {
       value: '',
@@ -281,7 +299,10 @@
 
     isEditingGlobal.value = false;
   };
-  const onGlobalDeleteUsers = () => UserService
-    .deleteUsers(selectedUsers.value)
+  const onGlobalDelete = (users: User[]) => UserService
+    .deleteUsers(users)
+    .then(loadLazyData);
+  const onDeleteRow = (user: User) => UserService
+    .deleteUser(user)
     .then(loadLazyData);
 </script>

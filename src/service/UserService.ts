@@ -42,9 +42,23 @@ export const UserService = {
   deleteUsers(users: Partial<User>[]) {
     const options = {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(users),
     };
 
-    return Promise.all(users.map(user =>
-      fetch(`/users/${user.id}`, options).then(({ status }) => status)));
+    const uri = `/users`;
+
+    return fetch(uri, options).then((res) => res.status === 204);
+  },
+  deleteUser(user: Partial<User>) {
+    const options = {
+      method: 'DELETE',
+    };
+
+    const uri = `/users/${user.id}`;
+
+    return fetch(uri, options).then((res) => res.status === 204);
   },
 };

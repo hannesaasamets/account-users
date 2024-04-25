@@ -81,6 +81,18 @@ fastify.patch('/users/:userId', async (request, reply) => {
   }
 });
 
+fastify.delete('/users', async (request, reply) => {
+  const { body } = request;
+
+  body.forEach(userForDeletion =>
+    users.splice(
+      users.findIndex(({ id }) => id === userForDeletion.id),
+      1,
+    ));
+
+  reply.code(204).send(); // HTTP 204 No Content
+});
+
 fastify.delete('/users/:userId', async (request, reply) => {
   const { userId } = request.params;
 
