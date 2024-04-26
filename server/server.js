@@ -1,6 +1,6 @@
 import Fastify from 'fastify';
 import Users from './users.js';
-import getUsers from './routes/getUsers.js';
+import fetchUsers from './routes/fetchUsers.js';
 import bulkEditUsers from './routes/bulkEditUsers.js';
 import bulkDeleteUsers from './routes/bulkDeleteUsers.js';
 import editUser from './routes/editUser.js';
@@ -13,7 +13,7 @@ const fastify = Fastify({
   logger: true,
 });
 
-fastify.get('/users', getUsers(users));
+fastify.get('/users', fetchUsers(users));
 fastify.patch('/users', bulkEditUsers(users));
 fastify.patch('/users/:userId', editUser(users));
 fastify.delete('/users', bulkDeleteUsers(users));
