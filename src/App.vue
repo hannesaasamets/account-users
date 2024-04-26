@@ -32,7 +32,7 @@
       @page="onPage"
       @sort="onSort"
       :global-filter-fields="['name', 'email', 'role']"
-      _selection-mode="multiple"
+      selection-mode="multiple"
       v-model:selection="selectedUsers"
       :select-all="allPageItemsSelected"
       @select-all-change="onSelectAllChange"
@@ -46,7 +46,7 @@
             v-if="!isEditingGlobal"
             icon="pi pi-pencil"
             label="Edit"
-            @click="isEditingGlobal = !isEditingGlobal"
+            @click="onClickEditGlobal"
           />
           <Dropdown
             v-else
@@ -57,10 +57,10 @@
             placeholder="Select a Status"
             @change="onGlobalEditRolesChange"
           >
-            <template #option="slotProps">
+            <template #option="{ option }">
               <Tag
-                :value="slotProps.option.label"
-                :severity="getSeverity(slotProps.option.value)"
+                :value="option.label"
+                :severity="option.severity"
               />
             </template>
           </Dropdown>
@@ -85,16 +85,15 @@
       >
         <template #body="{ data }">
           <div class="flex items-center gap-2">
-            <img style="width: 32px; height: 32px; border-radius: 100%; background: #eee" />
+            <Avatar
+              class="mr-2"
+              shape="circle"
+            />
             <span>
               <p>{{ data.name }}</p>
               <p>{{ data.email }}</p>
             </span>
           </div>
-        </template>
-        <template #editor="{ data }">
-          <InputText v-model="data.name" />
-          <InputText v-model="data.email" />
         </template>
       </Column>
       <Column
@@ -105,8 +104,8 @@
       >
         <template #body="{ data }">
           <Tag
-            :value="roles.find(role => role.value === data.role)?.label"
-            :severity="getSeverity(data.role)"
+            :value="rolesByValue[data.role].label"
+            :severity="rolesByValue[data.role].severity"
           />
         </template>
         <template #editor="{ data, field }">
@@ -116,11 +115,12 @@
             option-label="label"
             option-value="value"
             placeholder="Select a Status"
+            @click.stop
           >
-            <template #option="slotProps">
+            <template #option="{ option }">
               <Tag
-                :value="slotProps.option.label"
-                :severity="getSeverity(slotProps.option.value)"
+                :value="option.label"
+                :severity="option.severity"
               />
             </template>
           </Dropdown>
@@ -140,10 +140,12 @@
         </template>
         <template #editor="{ editorSaveCallback, editorCancelCallback }">
           <Button
+            outlined
             icon="pi pi-check"
             @click="editorSaveCallback"
           />
           <Button
+            outlined
             icon="pi pi-times"
             @click="editorCancelCallback"
           />
@@ -154,7 +156,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, reactive, computed } from 'vue';
+  import { ref, onMounted, reactive, computed, watch } from 'vue';
   import { UserService } from '@/service/UserService';
   import { FilterMatchMode } from 'primevue/api';
   import type {
@@ -169,7 +171,7 @@
     'name': string;
     'email': string;
     'avatar': string;
-    'role': keyof typeof severityMap;
+    'role': typeof roles[number]['value'];
   };
 
   onMounted(() => {
@@ -207,12 +209,12 @@
 
     setTimeout(() => {
       UserService
-        .getUsers(queryParams)
+        .fetchUsers(queryParams)
         .then(response => {
           users.value = response.users;
-          totalRecords.value = parseInt(response.totalRecords);
-          queryParams.offset = parseInt(response.offset);
-          queryParams.limit = parseInt(response.limit);
+          totalRecords.value = +response.totalRecords;
+          queryParams.offset = +response.offset;
+          queryParams.limit = +response.limit;
 
           isLoading.value = false;
 
@@ -252,31 +254,34 @@
     {
       value: 'ACCOUNT_MANAGER',
       label: 'Account manager',
+      severity: 'danger',
     },
     {
       value: 'ADMIN',
       label: 'Admin',
+      severity: 'success',
     },
     {
       value: 'AGENT',
       label: 'Agent',
+      severity: 'info',
     },
     {
       value: 'EXTERNAL_REVIEWER',
       label: 'External reviewer',
+      severity: 'warning',
     },
   ];
-  const severityMap = {
-    'ACCOUNT_MANAGER': 'danger',
-    'ADMIN': 'success',
-    'AGENT': 'info',
-    'EXTERNAL_REVIEWER': 'warning',
-  };
-  const getSeverity = (status: User['role']) =>
-    severityMap[status];
+  const rolesByValue = roles.reduce((acc, role) => {
+    acc[role.value] = role;
+
+    return acc;
+  }, {} as Record<User['role'], typeof roles[number]>);
   const onRowEditSave = ({ newData, index }: DataTableRowEditSaveEvent) => {
     UserService.editUser(newData).then(persistedUser => {
       users.value[index] = persistedUser;
+
+      setGlobalEditRolesIfSameSelected();
     });
   };
   const onGlobalEditRolesChange = () => {
@@ -305,4 +310,27 @@
   const onDeleteRow = (user: User) => UserService
     .deleteUser(user)
     .then(loadLazyData);
+
+  const setGlobalEditRolesIfSameSelected = () => {
+    const firstRole = users.value.find(({ id }) => id === selectedUsers.value[0].id)?.role;
+    const allSelectedWithSameRole = selectedUsers.value.every(selectedUser =>
+      users.value.find(({ id }) => id === selectedUser.id)?.role === firstRole);
+
+    globalEditRoles.value = allSelectedWithSameRole
+      ? firstRole
+      : undefined;
+  };
+  const onClickEditGlobal = () => {
+    isEditingGlobal.value = true;
+
+    setGlobalEditRolesIfSameSelected();
+  };
+
+  watch(selectedUsers, () => {
+    if (selectedUsers.value.length === 0) {
+      isEditingGlobal.value = false;
+    } else {
+      setGlobalEditRolesIfSameSelected();
+    }
+  });
 </script>

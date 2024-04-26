@@ -794,6 +794,12 @@ module.exports = {
         'indent': 'off',
       },
     },
+    {
+      files: ["*.ts"],
+      rules: {
+        "no-undef": "off", // TypeScript already checks for undefined variables
+      }
+    }
   ],
   parserOptions: {
     ecmaVersion: 'latest',
