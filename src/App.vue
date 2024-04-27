@@ -1,7 +1,10 @@
 <template>
-  <div class="card p-fluid">
+  <div>
+    <ThemeSwitcher />
     <div class="flex justify-between">
-      <h1>Account Users</h1>
+      <h1 class="text-xl font-medium">
+        Account Users
+      </h1>
       <span class="relative">
         <i class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600" />
         <InputText
@@ -16,148 +19,177 @@
         />
       </span>
     </div>
-    <DataTable
-      :value="users"
-      lazy
-      paginator
-      edit-mode="row"
-      v-model:editingRows="editingRows"
-      @row-edit-save="onRowEditSave"
-      :first="queryParams.offset"
-      :rows="pageSize"
-      v-model:filters="filters"
-      data-key="id"
-      :total-records="totalRecords"
-      :loading="isLoading"
-      @page="onPage"
-      @sort="onSort"
-      :global-filter-fields="['name', 'email', 'role']"
-      selection-mode="multiple"
-      v-model:selection="selectedUsers"
-      :select-all="allPageItemsSelected"
-      @select-all-change="onSelectAllChange"
-      table-style="min-width: 75rem"
-    >
-      <template #header>
-        <div>
-          {{ selectedUsers.length }} users selected
-          <Button
-            :disabled="selectedUsers.length === 0"
-            v-if="!isEditingGlobal"
-            icon="pi pi-pencil"
-            label="Edit"
-            @click="onClickEditGlobal"
-          />
-          <Dropdown
-            v-else
-            v-model="globalEditRoles"
-            :options="roles"
-            option-label="label"
-            option-value="value"
-            placeholder="Select a Status"
-            @change="onGlobalEditRolesChange"
-          >
-            <template #option="{ option }">
-              <Tag
-                :value="option.label"
-                :severity="option.severity"
-              />
-            </template>
-          </Dropdown>
-
-          <Button
-            :disabled="selectedUsers.length === 0"
-            icon="pi pi-trash"
-            label="Delete"
-            @click="onGlobalDelete(selectedUsers)"
-          />
-        </div>
-      </template>
-      <Column
+    <div class="card p-fluid">
+      <DataTable
+        :value="users"
+        lazy
+        paginator
+        edit-mode="row"
+        v-model:editingRows="editingRows"
+        @row-edit-save="onRowEditSave"
+        :first="queryParams.offset"
+        :rows="pageSize"
+        v-model:filters="filters"
+        data-key="id"
+        :total-records="totalRecords"
+        :loading="isLoading"
+        @page="onPage"
+        @sort="onSort"
+        :global-filter-fields="['name', 'email', 'role']"
         selection-mode="multiple"
-        header-style="width: 3rem"
-      />
-      <Column header-style="width: 3rem" />
-      <Column
-        field="name"
-        header="User"
-        sortable
+        v-model:selection="selectedUsers"
+        :select-all="allPageItemsSelected"
+        @select-all-change="onSelectAllChange"
+        table-style="min-width: 75rem"
       >
-        <template #body="{ data }">
-          <div class="flex items-center gap-2">
-            <Avatar
-              class="mr-2"
-              shape="circle"
-            />
-            <span>
-              <p>{{ data.name }}</p>
-              <p>{{ data.email }}</p>
+        <template #header>
+          <div>
+            {{ selectedUsers.length }} users selected
+            <span v-show="selectedUsers.length > 0">
+              <Button
+                :disabled="selectedUsers.length === 0"
+                v-if="!isEditingGlobal"
+                icon="pi pi-pencil"
+                label="Edit"
+                severity="secondary"
+                class="ml-6 mr-2"
+                outlined
+                size="small"
+                raised
+                @click="onClickEditGlobal"
+              />
+              <Dropdown
+                v-else
+                v-model="globalEditRoles"
+                :options="roles"
+                option-label="label"
+                option-value="value"
+                placeholder="Select a Status"
+                @change="onGlobalEditRolesChange"
+              >
+                <template #option="{ option }">
+                  <Tag
+                    :value="option.label"
+                    :severity="option.color"
+                  />
+                </template>
+              </Dropdown>
+
+              <Button
+                :disabled="selectedUsers.length === 0"
+                icon="pi pi-trash"
+                label="Delete"
+                severity="secondary"
+                outlined
+                size="small"
+                raised
+                @click="onGlobalDelete(selectedUsers)"
+              />
             </span>
           </div>
         </template>
-      </Column>
-      <Column
-        field="role"
-        header="Permission"
-        filter-match-mode="contains"
-        sortable
-      >
-        <template #body="{ data }">
-          <Tag
-            :value="rolesByValue[data.role].label"
-            :severity="rolesByValue[data.role].severity"
-          />
-        </template>
-        <template #editor="{ data, field }">
-          <Dropdown
-            v-model="data[field]"
-            :options="roles"
-            option-label="label"
-            option-value="value"
-            placeholder="Select a Status"
-            @click.stop
-          >
-            <template #option="{ option }">
-              <Tag
-                :value="option.label"
-                :severity="option.severity"
+        <Column
+          selection-mode="multiple"
+          header-style="width: 3rem"
+        />
+        <Column header-style="width: 3rem" />
+        <Column
+          field="name"
+          header="User"
+          sortable
+        >
+          <template #body="{ data }">
+            <div class="flex items-center gap-2">
+              <Avatar
+                class="mr-2"
+                shape="circle"
               />
-            </template>
-          </Dropdown>
-        </template>
-      </Column>
-      <Column header="">
-        <template #body="{ data, editorInitCallback }">
-          <Button
-            label="Edit"
-            icon="pi pi-pencil"
-            @click="editorInitCallback"
-          />
-          <Button
-            icon="pi pi-trash"
-            @click="onDeleteRow(data)"
-          />
-        </template>
-        <template #editor="{ editorSaveCallback, editorCancelCallback }">
-          <Button
-            outlined
-            icon="pi pi-check"
-            @click="editorSaveCallback"
-          />
-          <Button
-            outlined
-            icon="pi pi-times"
-            @click="editorCancelCallback"
-          />
-        </template>
-      </Column>
-    </DataTable>
+              <span>
+                <p>{{ data.name }}</p>
+                <p>{{ data.email }}</p>
+              </span>
+            </div>
+          </template>
+        </Column>
+        <Column
+          field="role"
+          header="Permission"
+          filter-match-mode="contains"
+          sortable
+        >
+          <template #body="{ data }">
+            <Tag
+              :value="rolesByValue[data.role].label"
+              :severity="rolesByValue[data.role].color"
+            />
+          </template>
+          <template #editor="{ data, field }">
+            <Dropdown
+              v-model="data[field]"
+              :options="roles"
+              option-label="label"
+              option-value="value"
+              placeholder="Select a Status"
+              @click.stop
+            >
+              <template #option="{ option }">
+                <Tag
+                  :value="option.label"
+                  :severity="option.color"
+                />
+              </template>
+            </Dropdown>
+          </template>
+        </Column>
+        <Column header="">
+          <template #body="{ data, editorInitCallback }">
+            <Button
+              label="Edit"
+              icon="pi pi-pencil"
+              severity="secondary"
+              class="mr-1"
+              outlined
+              size="small"
+              raised
+              @click="editorInitCallback"
+            />
+            <Button
+              icon="pi pi-trash"
+              @click="onDeleteRow(data)"
+              severity="secondary"
+              outlined
+              size="small"
+              raised
+            />
+          </template>
+          <template #editor="{ editorSaveCallback, editorCancelCallback }">
+            <Button
+              icon="pi pi-check"
+              severity="secondary"
+              class="mr-1"
+              outlined
+              size="small"
+              raised
+              @click="editorSaveCallback"
+            />
+            <Button
+              icon="pi pi-times"
+              severity="secondary"
+              outlined
+              size="small"
+              raised
+              @click="editorCancelCallback"
+            />
+          </template>
+        </Column>
+      </DataTable>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, onMounted, reactive, computed, watch } from 'vue';
-  import { UserService } from '@/service/UserService';
+  import { type QueryParams, type User, UserService } from '@/service/UserService';
   import { FilterMatchMode } from 'primevue/api';
   import type {
     DataTablePageEvent,
@@ -165,18 +197,7 @@
     DataTableSelectAllChangeEvent,
     DataTableSortEvent,
   } from 'primevue/datatable';
-
-  export type User = {
-    'id': number;
-    'name': string;
-    'email': string;
-    'avatar': string;
-    'role': typeof roles[number]['value'];
-  };
-
-  onMounted(() => {
-    loadLazyData();
-  });
+  import { roles, rolesByValue } from '@/constants/roles';
 
   const isEditingGlobal = ref(false);
   const globalEditRoles = ref();
@@ -191,18 +212,20 @@
       matchMode: FilterMatchMode.CONTAINS,
     },
   });
-  const pageSize = 9;
-  const queryParams = reactive({
+  const pageSize = 6;
+  const queryParams = reactive<QueryParams>({
     offset: 0,
     limit: pageSize,
-    sortField: '' as 'name' | 'email' | 'role' | 'id',
-    sortOrder: '' as 'asc' | 'desc',
+    sortField: 'id',
+    sortOrder: 'asc',
     filter: filters.global.value,
   });
 
-  export type QueryParams = typeof queryParams;
+  onMounted(() => {
+    loadPageData(() => selectedUsers.value = users.value.slice(1, 3));
+  });
 
-  const loadLazyData = () => {
+  const loadPageData = (onDataLoaded?: () => void) => {
     selectedUsers.value = [];
     isLoading.value = true;
     queryParams.limit = pageSize;
@@ -218,14 +241,16 @@
 
           isLoading.value = false;
 
+          onDataLoaded?.();
+
           console.log('response', response);
         });
-    }, Math.random() * 1000 + 250);
+    }, Math.random() * 0 + 250);
   };
   const onPage = (event: DataTablePageEvent) => {
     queryParams.offset = event.first;
 
-    loadLazyData();
+    loadPageData();
   };
   const onSort = (event: DataTableSortEvent) => {
     queryParams.sortField = event.sortField as typeof queryParams.sortField;
@@ -234,13 +259,13 @@
       : 'asc';
     queryParams.offset = event.first;
 
-    loadLazyData();
+    loadPageData();
   };
   const onFilter = () => {
     queryParams.filter = filters.global.value;
     queryParams.offset = 0;
 
-    loadLazyData();
+    loadPageData();
   };
   const onSelectAllChange = (event: DataTableSelectAllChangeEvent) => {
     selectedUsers.value = event.checked
@@ -249,34 +274,6 @@
   };
   const allPageItemsSelected = computed(() =>
     selectedUsers.value.length === users.value.length);
-
-  const roles = [
-    {
-      value: 'ACCOUNT_MANAGER',
-      label: 'Account manager',
-      severity: 'danger',
-    },
-    {
-      value: 'ADMIN',
-      label: 'Admin',
-      severity: 'success',
-    },
-    {
-      value: 'AGENT',
-      label: 'Agent',
-      severity: 'info',
-    },
-    {
-      value: 'EXTERNAL_REVIEWER',
-      label: 'External reviewer',
-      severity: 'warning',
-    },
-  ];
-  const rolesByValue = roles.reduce((acc, role) => {
-    acc[role.value] = role;
-
-    return acc;
-  }, {} as Record<User['role'], typeof roles[number]>);
   const onRowEditSave = ({ newData, index }: DataTableRowEditSaveEvent) => {
     UserService.editUser(newData).then(persistedUser => {
       users.value[index] = persistedUser;
@@ -306,11 +303,14 @@
   };
   const onGlobalDelete = (users: User[]) => UserService
     .deleteUsers(users)
-    .then(loadLazyData);
+    .then(loadPageData);
   const onDeleteRow = (user: User) => UserService
     .deleteUser(user)
-    .then(loadLazyData);
-
+    .then(loadPageData);
+  const onClickEditGlobal = () => {
+    isEditingGlobal.value = true;
+    setGlobalEditRolesIfSameSelected();
+  };
   const setGlobalEditRolesIfSameSelected = () => {
     const firstRole = users.value.find(({ id }) => id === selectedUsers.value[0].id)?.role;
     const allSelectedWithSameRole = selectedUsers.value.every(selectedUser =>
@@ -319,11 +319,6 @@
     globalEditRoles.value = allSelectedWithSameRole
       ? firstRole
       : undefined;
-  };
-  const onClickEditGlobal = () => {
-    isEditingGlobal.value = true;
-
-    setGlobalEditRolesIfSameSelected();
   };
 
   watch(selectedUsers, () => {
@@ -334,3 +329,10 @@
     }
   });
 </script>
+
+<style>
+  tr[data-p-highlight="false"]:hover > td:first-child,
+  tr[data-p-highlight="false"]:hover > td:last-child {
+    border-color: rgb(var(--surface-50));
+  }
+</style>

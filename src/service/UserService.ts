@@ -1,17 +1,33 @@
-import type { QueryParams, User } from '@/App.vue';
 import { fetchJson, fetchGetJson } from '@/API/Client';
+import type { RoleValue } from '@/constants/roles';
 
 const USERS_ENDPOINT = '/users';
 
+export type User = {
+  'id': number;
+  'name': string;
+  'email': string;
+  'avatar': string;
+  'role': RoleValue;
+};
+export type QueryParams = {
+  offset: number;
+  limit: number;
+  sortField: keyof User;
+  sortOrder: 'asc' | 'desc';
+  filter: string;
+}
+type FetchUsersResponse = {
+  users: User[];
+  offset: number;
+  limit: number;
+  totalRecords: number;
+  sortField: string;
+};
+
 export const UserService = {
   async fetchUsers(params?: QueryParams) {
-    return fetchGetJson<{
-      users: User[];
-      offset: number;
-      limit: number;
-      totalRecords: number;
-      sortField: string;
-    }>(USERS_ENDPOINT, params);
+    return fetchGetJson<FetchUsersResponse>(USERS_ENDPOINT, params);
   },
 
   async editUser(user: User) {

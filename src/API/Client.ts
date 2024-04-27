@@ -1,4 +1,4 @@
-import type { QueryParams } from '@/App.vue';
+import type { QueryParams } from '@/service/UserService';
 
 function buildUrlWithParams(url: string, params?: QueryParams): string {
   if (!params) {
