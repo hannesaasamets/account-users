@@ -2,7 +2,7 @@ export default (users) => async (request, reply) => {
   const { userId } = request.params;
   const { body } = request;
 
-  const user = users.find(({ id }) => id === +userId);
+  const user = users.find(({ id }) => id === parseInt(userId));
 
   if (user) {
     Object.assign(user, body);

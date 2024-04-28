@@ -13,7 +13,7 @@ export default (users) => async (request, reply) => {
     .filter(filterByValuesCaseInsensitive(filter))
     .sort(sortCaseInsensitive(sortField, sortOrder));
   const paginatedUsers = filteredUsers
-    .slice(+offset, +offset + limit);
+    .slice(parseInt(offset), parseInt(offset) + parseInt(limit));
 
   reply.send({
     users: paginatedUsers,

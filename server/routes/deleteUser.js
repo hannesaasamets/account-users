@@ -1,7 +1,7 @@
 export default (users) => async (request, reply) => {
   const { userId } = request.params;
 
-  const userIndex = users.findIndex(user => user.id === +userId);
+  const userIndex = users.findIndex(user => user.id === parseInt(userId));
 
   if (userIndex !== -1) {
     users.splice(userIndex, 1);
