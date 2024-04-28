@@ -70,7 +70,7 @@
                 <template #option="{ option }">
                   <Tag
                     :value="option.label"
-                    :severity="option.color"
+                    :severity="option.severity"
                   />
                 </template>
               </Dropdown>
@@ -120,7 +120,7 @@
           <template #body="{ data }">
             <Tag
               :value="rolesByValue[data.role].label"
-              :severity="rolesByValue[data.role].color"
+              :severity="rolesByValue[data.role].severity"
             />
           </template>
           <template #editor="{ data, field }">
@@ -135,7 +135,7 @@
               <template #option="{ option }">
                 <Tag
                   :value="option.label"
-                  :severity="option.color"
+                  :severity="option.severity"
                 />
               </template>
             </Dropdown>
@@ -245,7 +245,7 @@
 
           console.log('response', response);
         });
-    }, Math.random() * 0 + 250);
+    }, Math.random() * 1000 + 250);
   };
   const onPage = (event: DataTablePageEvent) => {
     queryParams.offset = event.first;
