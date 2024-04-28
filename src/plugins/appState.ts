@@ -1,20 +1,24 @@
+import Klaus from '@/presets/klaus';
 import Lara from '@/presets/lara';
 import Wind from '@/presets/wind';
-import { reactive, watch } from 'vue';
+import { reactive, watch, type App } from 'vue';
+
+const presetsByName = {
+  klaus: Klaus,
+  lara: Lara,
+  wind: Wind,
+};
 
 export default {
-  install: (app) => {
+  install: (app: App) => {
     const _appState = reactive({
-      preset: 'lara',
+      preset: 'klaus',
     });
 
     watch(
       () => _appState.preset,
       (newValue) => {
-        if (newValue === 'lara')
-          app.config.globalProperties.$primevue.config.pt = Lara;
-        else if (newValue === 'wind')
-          app.config.globalProperties.$primevue.config.pt = Wind;
+        app.config.globalProperties.$primevue.config.pt = presetsByName[newValue as keyof typeof presetsByName];
       },
     );
 

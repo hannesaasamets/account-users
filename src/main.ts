@@ -105,7 +105,7 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import ThemeConfigurator from './components/ThemeConfigurator.vue';
-import Lara from './presets/lara';
+import Klaus from './presets/klaus';
 import appState from './plugins/appState.js';
 
 const app = createApp(App);
@@ -113,7 +113,7 @@ const app = createApp(App);
 app.use(PrimeVue, {
   ripple: true,
   unstyled: true,
-  pt: Lara,
+  pt: Klaus,
 });
 app.use(ConfirmationService);
 app.use(ToastService);
