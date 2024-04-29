@@ -9,17 +9,21 @@ export default {
       // Sizes & Spacing
       'leading-[normal]',
       {
-        'px-4 py-3': props.size === null,
-        'text-sm py-2 px-3': props.size === 'small',
+        'px-3.5 py-3': props.size === null,
+        'py-2': props.size === 'small',
+        'px-3 pr-4': props.size === 'small' && props.label != null,
+        'text-base': props.size === 'small',
         'text-xl py-3 px-4': props.size === 'large',
       },
       {
-        'w-12 p-0 py-3': props.label == null && props.icon !== null,
+        'py-3': props.label == null && props.icon !== null && props.size !== 'small',
+        'px-0': props.label == null && props.icon !== null && props.size === 'small',
+        'w-10 p-0': props.label == null && props.icon !== null,
       },
 
       // Shapes
       {
-        'shadow-lg': props.raised,
+        'shadow-sm': props.raised,
       },
       {
         'rounded-md': !props.rounded,
@@ -54,7 +58,7 @@ export default {
 
       // Outlined Button
       {
-        'bg-transparent border': props.outlined && !props.plain,
+        'bg-white border': props.outlined && !props.plain,
       },
 
       // --- Severity Buttons ---
@@ -86,7 +90,7 @@ export default {
       },
       // Secondary Outlined Button
       {
-        'text-surface-500 dark:text-surface-300 border border-surface-500 hover:bg-surface-300/20': props.outlined && props.severity === 'secondary' && !props.plain,
+        'text-surface-600 dark:text-surface-300 border border-surface-200 hover:bg-surface-300/20': props.outlined && props.severity === 'secondary' && !props.plain,
       },
 
       // Success Button
@@ -280,7 +284,7 @@ export default {
   label: ({ props }) => ({
     class: [
       'duration-200',
-      'font-bold',
+      'font-medium',
       {
         'hover:underline': props.link,
       },
@@ -298,6 +302,11 @@ export default {
         'ml-2 order-1': props.iconPos == 'right' && props.label != null,
         'mb-2': props.iconPos == 'top' && props.label != null,
         'mt-2': props.iconPos == 'bottom' && props.label != null,
+      },
+
+      // Secondary Outlined Button
+      {
+        'text-surface-400 dark:text-surface-400': props.outlined && props.severity === 'secondary' && !props.plain,
       },
     ],
   }),
