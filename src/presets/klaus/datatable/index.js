@@ -67,7 +67,7 @@ export default {
     ],
   }),
   table: {
-    class: 'w-full border-spacing-0 border-separate',
+    class: 'w-full border-spacing-x-0 border-spacing-y-1 border-separate',
   },
   thead: ({ context }) => ({
     class: [
@@ -204,7 +204,15 @@ export default {
         },
 
         // Color
-        'border-surface-200 dark:border-surface-700',
+        'border-surface-0 dark:border-surface-700',
+
+        'first:transition-colors last:transition-colors first:border-b-0 last:border-b-0',
+        'first:border-l-4 first:rounded-l',
+        'last:border-r-4 last:rounded-r',
+
+        {
+          'first:border-l-primary-500 last:border-r-surface-50': parent.props.selected,
+        },
       ],
     }),
     footercell: ({ context }) => ({
@@ -1185,10 +1193,10 @@ export default {
       // Color
       'dark:text-white/80',
       {
-        'bg-primary-50 text-primary-700 dark:bg-primary-400/30': context.selected,
+        'bg-surface-50 dark:bg-primary-400/30': context.selected,
       },
       {
-        'bg-surface-0 text-surface-600 dark:bg-surface-800': !context.selected,
+        'bg-surface-0 dark:bg-surface-800': !context.selected,
       },
       {
         'font-bold bg-surface-0 dark:bg-surface-800 z-20': props.frozenRow,
@@ -1199,10 +1207,10 @@ export default {
 
       // State
       {
-        'focus:outline-none focus:outline-offset-0 focus:ring focus:ring-primary-400/50 ring-inset dark:focus:ring-primary-300/50': context.selectable,
+        'focus:outline-none focus:outline-offset-0': context.selectable,
       },
       {
-        'hover:bg-surface-300/20 hover:text-surface-600': props.selectionMode && !context.selected,
+        'hover:bg-surface-50': props.selectionMode && !context.selected,
       },
 
       // Transition
@@ -1214,6 +1222,8 @@ export default {
       {
         'cursor-pointer': props.selectionMode,
       },
+
+      'last:border-r-4 border-r-primary-500',
     ],
   }),
   rowexpansion: {
