@@ -245,7 +245,7 @@
 
           console.log('response', response);
         });
-    }, Math.random() * 1000 + 250);
+    }, Math.random() * 0 + 250);
   };
   const onPage = (event: DataTablePageEvent) => {
     queryParams.offset = event.first;
