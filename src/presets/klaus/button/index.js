@@ -9,16 +9,21 @@ export default {
       // Sizes & Spacing
       'leading-[normal]',
       {
-        'px-3.5 py-3': props.size === null,
+        'py-3 px-3.5': props.size === null,
         'py-2': props.size === 'small',
-        'px-3 pr-4': props.size === 'small' && props.label != null,
+        // small, label only
+        'px-4': props.size === 'small' && props.label != null && props.icon == null,
+        // small, icon only
+        'px-3': props.size === 'small' && props.label == null && props.icon != null,
+        // small, label & icon
+        'pl-2.5 pr-3.5': props.size === 'small' && props.label != null && props.icon != null,
         'text-base': props.size === 'small',
         'text-xl py-3 px-4': props.size === 'large',
       },
       {
-        'py-3': props.label == null && props.icon !== null && props.size !== 'small',
-        'px-0': props.label == null && props.icon !== null && props.size === 'small',
-        'w-10 p-0': props.label == null && props.icon !== null,
+        'py-3': props.label == null && props.icon != null && props.size !== 'small',
+        'px-0': props.label == null && props.icon != null && props.size === 'small',
+        'w-[2.32rem] p-0': props.label == null && props.icon != null,
       },
 
       // Shapes
@@ -289,7 +294,7 @@ export default {
         'hover:underline': props.link,
       },
       {
-        'flex-1': props.label !== null,
+        'flex-1': props.label != null,
         'invisible w-0': props.label == null,
       },
     ],
@@ -298,7 +303,7 @@ export default {
     class: [
       'mx-0',
       {
-        'mr-2': props.iconPos == 'left' && props.label != null,
+        'mr-2.5': props.iconPos == 'left' && props.label != null,
         'ml-2 order-1': props.iconPos == 'right' && props.label != null,
         'mb-2': props.iconPos == 'top' && props.label != null,
         'mt-2': props.iconPos == 'bottom' && props.label != null,

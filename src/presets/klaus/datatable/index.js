@@ -52,16 +52,13 @@ export default {
   }),
   header: ({ props }) => ({
     class: [
-      'font-bold',
-
       // Shape
-      props.showGridlines ? 'border-x border-t border-b-0' : 'border-y border-x-0',
+      props.showGridlines && 'border-x border-t border-b-0',
 
       // Spacing
       'p-4',
 
       // Color
-      'bg-surface-50 dark:bg-surface-800',
       'border-surface-200 dark:border-surface-700',
       'text-surface-700 dark:text-white/80',
     ],
@@ -108,10 +105,9 @@ export default {
     ],
   },
   column: {
+    headerTitle: 'text-sm font-medium text-surface-500',
     headercell: ({ context, props }) => ({
       class: [
-        'font-bold',
-
         // Position
         {
           'sticky z-20 border-b': props.frozen || props.frozen === '',
@@ -127,21 +123,20 @@ export default {
         // Shape
         {
           'first:border-l border-y border-r': context?.showGridlines,
+          'border-0 border-b border-solid': context?.showGridlines,
         },
-        'border-0 border-b border-solid',
 
         // Spacing
-        context?.size === 'small' ? 'p-2' : context?.size === 'large' ? 'p-5' : 'p-4',
+        context?.size === 'small' ? 'p-2' : context?.size === 'large' ? 'p-5' : 'px-3.5',
 
         // Color
-        (props.sortable === '' || props.sortable) && context.sorted ? 'bg-primary-50 text-primary-700' : 'bg-surface-50 text-surface-700',
+        (props.sortable === '' || props.sortable) && context.sorted ? 'text-primary-700' : 'text-surface-700',
         (props.sortable === '' || props.sortable) && context.sorted ? 'dark:text-white dark:bg-primary-400/30' : 'dark:text-white/80 dark:bg-surface-800',
         'border-surface-200 dark:border-surface-700 ',
 
+        'first:border-l-4 first:border-surface-0',
+
         // States
-        {
-          'hover:bg-surface-100 dark:hover:bg-surface-400/30': (props.sortable === '' || props.sortable) && !context?.sorted,
-        },
         'focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring focus-visible:ring-inset focus-visible:ring-primary-400/50 dark:focus-visible:ring-primary-300/50',
 
         // Transition
@@ -159,7 +154,7 @@ export default {
       ],
     }),
     headercontent: {
-      class: 'flex items-center',
+      class: 'flex items-center gap-2',
     },
     sort: ({ context }) => ({
       class: [
@@ -181,7 +176,7 @@ export default {
         'text-left',
 
         // Shape
-        'border-0 border-b border-solid',
+        'border-0 border-solid',
         {
           'first:border-l border-r border-b': context?.showGridlines,
         },
@@ -197,10 +192,10 @@ export default {
           'p-5': context?.size === 'large' && !state.d_editing,
         },
         {
-          'p-4': context?.size !== 'large' && context?.size !== 'small' && !state.d_editing,
+          'py-3 px-3.5': context?.size !== 'large' && context?.size !== 'small' && !state.d_editing,
         },
         {
-          'py-[0.6rem] px-2': state.d_editing,
+          'py-3 px-3.5': state.d_editing,
         },
 
         // Color

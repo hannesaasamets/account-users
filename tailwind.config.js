@@ -8,6 +8,13 @@ export default {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        md: '0.286rem',
+      },
+      fontSize: {
+        lg: '1.143rem',
+        xl: '1.286rem',
+      },
       colors: {
         'primary-50': 'rgb(var(--primary-50))',
         'primary-100': 'rgb(var(--primary-100))',

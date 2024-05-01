@@ -1,9 +1,5 @@
 export default {
   css: `
-    .rounded-md {
-      border-radius: 0.286rem;
-    }  
-  
     *[data-pd-ripple="true"]{
         overflow: hidden;
         position: relative;

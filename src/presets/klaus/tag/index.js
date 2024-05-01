@@ -2,7 +2,7 @@ export default {
   root: ({ props }) => ({
     class: [
       // Font
-      'text-sm font-medium',
+      'text-sm font-medium whitespace-nowrap',
 
       // Alignments
       'inline-flex items-center justify-center',

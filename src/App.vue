@@ -1,26 +1,33 @@
 <template>
-  <div>
+  <div class="col-span-full">
     <ThemeSwitcher />
-    <div class="flex justify-between">
+    <div class="flex justify-between items-center mb-5">
       <h1 class="text-xl font-medium">
-        Account Users
+        Account users
       </h1>
-      <span class="relative">
-        <i class="pi pi-search absolute top-2/4 -mt-2 left-3 text-surface-400 dark:text-surface-600" />
-        <InputText
-          v-model="filters.global.value"
-          placeholder="Global Search"
-          class="pl-10 font-normal"
-          @change="onFilter"
-        />
-        <Button
-          label="Connect users"
-          @click="(filters.global.value = 'johanna') && onFilter()"
-        />
+      <span class="flex gap-3.5">
+        <span class="relative">
+          <i class="pi pi-search absolute top-2/4 -mt-2 left-3.5 text-surface-400 dark:text-surface-600" />
+          <InputText
+            v-model="filters.global.value"
+            placeholder="Search"
+            class="pl-10 font-normal"
+            @change="onFilter"
+          />
+        </span>
+        <Button label="Connect users" />
       </span>
     </div>
-    <div class="card p-fluid">
+    <Card
+      class="w-full"
+      #content
+      :pt="{
+        body: '',
+        content: '',
+      }"
+    >
       <DataTable
+        class="px-5 pt-2.5 pb-1.5 w-full"
         :value="users"
         lazy
         paginator
@@ -40,25 +47,27 @@
         v-model:selection="selectedUsers"
         :select-all="allPageItemsSelected"
         @select-all-change="onSelectAllChange"
-        table-style="min-width: 75rem"
       >
         <template #header>
-          <div>
-            {{ selectedUsers.length }} users selected
-            <span v-show="selectedUsers.length > 0">
+          <div class="ml-1 h-10 flex items-center gap-7">
+            <span class="text-lg font-medium">{{ selectedUsers.length }} users selected</span>
+            <span
+              v-show="selectedUsers.length > 0"
+              class="flex gap-2"
+            >
               <Button
                 :disabled="selectedUsers.length === 0"
                 v-if="!isEditingGlobal"
                 icon="pi pi-pencil"
                 label="Edit"
                 severity="secondary"
-                class="ml-6 mr-2"
                 outlined
                 size="small"
                 raised
                 @click="onClickEditGlobal"
               />
               <Dropdown
+                size="small"
                 v-else
                 v-model="globalEditRoles"
                 :options="roles"
@@ -90,23 +99,27 @@
         </template>
         <Column
           selection-mode="multiple"
-          header-style="width: 3rem"
+          class="w-0"
         />
-        <Column header-style="width: 3rem" />
         <Column
           field="name"
           header="User"
           sortable
+          class="pl-0"
         >
+          <template #sorticon="{ sorted, sortOrder }">
+            <i
+              v-if="sorted"
+              class="text-xs text-surface-500"
+              :class="`pi pi-arrow-${sortOrder === 1 ? 'down' : 'up'}`"
+            ></i>
+          </template>
           <template #body="{ data }">
-            <div class="flex items-center gap-2">
-              <Avatar
-                class="mr-2"
-                shape="circle"
-              />
-              <span>
-                <p>{{ data.name }}</p>
-                <p>{{ data.email }}</p>
+            <div class="flex items-center gap-3.5">
+              <Avatar shape="circle" />
+              <span class="leading-6">
+                <p class="text-surface-700 font-medium">{{ data.name }}</p>
+                <p class="text-surface-500">{{ data.email }}</p>
               </span>
             </div>
           </template>
@@ -116,7 +129,15 @@
           header="Permission"
           filter-match-mode="contains"
           sortable
+          class="w-[144px]"
         >
+          <template #sorticon="{ sorted, sortOrder }">
+            <i
+              v-if="sorted"
+              class="text-xs text-surface-500"
+              :class="`pi pi-arrow-${sortOrder === 1 ? 'down' : 'up'}`"
+            ></i>
+          </template>
           <template #body="{ data }">
             <Tag
               :value="rolesByValue[data.role].label"
@@ -125,6 +146,7 @@
           </template>
           <template #editor="{ data, field }">
             <Dropdown
+              size="small"
               v-model="data[field]"
               :options="roles"
               option-label="label"
@@ -141,49 +163,54 @@
             </Dropdown>
           </template>
         </Column>
-        <Column header="">
+        <Column
+          header=""
+          class="w-0"
+        >
           <template #body="{ data, editorInitCallback }">
-            <Button
-              label="Edit"
-              icon="pi pi-pencil"
-              severity="secondary"
-              class="mr-1"
-              outlined
-              size="small"
-              raised
-              @click="editorInitCallback"
-            />
-            <Button
-              icon="pi pi-trash"
-              @click="onDeleteRow(data)"
-              severity="secondary"
-              outlined
-              size="small"
-              raised
-            />
+            <div class="flex gap-1 mx-2.5">
+              <Button
+                label="Edit"
+                icon="pi pi-pencil"
+                severity="secondary"
+                outlined
+                size="small"
+                raised
+                @click="editorInitCallback"
+              />
+              <Button
+                icon="pi pi-trash"
+                @click="onDeleteRow(data)"
+                severity="secondary"
+                outlined
+                size="small"
+                raised
+              />
+            </div>
           </template>
           <template #editor="{ editorSaveCallback, editorCancelCallback }">
-            <Button
-              icon="pi pi-check"
-              severity="secondary"
-              class="mr-1"
-              outlined
-              size="small"
-              raised
-              @click="editorSaveCallback"
-            />
-            <Button
-              icon="pi pi-times"
-              severity="secondary"
-              outlined
-              size="small"
-              raised
-              @click="editorCancelCallback"
-            />
+            <div class="flex gap-1 mx-2.5">
+              <Button
+                icon="pi pi-check"
+                severity="secondary"
+                outlined
+                size="small"
+                raised
+                @click="editorSaveCallback"
+              />
+              <Button
+                icon="pi pi-times"
+                severity="secondary"
+                outlined
+                size="small"
+                raised
+                @click="editorCancelCallback"
+              />
+            </div>
           </template>
         </Column>
       </DataTable>
-    </div>
+    </Card>
   </div>
 </template>
 

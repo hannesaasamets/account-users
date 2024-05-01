@@ -13,7 +13,7 @@ export default {
 
       // Sizes
       {
-        'h-8 w-8': props.size == null || props.size == 'normal',
+        'h-9 w-9': props.size == null || props.size == 'normal',
         'w-12 h-12': props.size == 'large',
         'w-16 h-16': props.size == 'xlarge',
       },

@@ -12,7 +12,7 @@ export default {
       'bg-surface-0 dark:bg-surface-900',
       'border',
       {
-        'border-surface-300 dark:border-surface-600': !props.invalid,
+        'border-surface-200 dark:border-surface-600': !props.invalid,
       },
 
       // Invalid State

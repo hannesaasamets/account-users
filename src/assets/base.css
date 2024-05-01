@@ -27,7 +27,7 @@
   --surface-100: 237 242 247; /* page background */
   --surface-200: 226 232 240; /* secondary button border, input border */
   --surface-300: 203 213 224; /* checkbox border */
-  --surface-400: 160 174 192; /* secondary button icon, input placeholder */
+  --surface-400: 160 174 192; /* secondary button icon, input placeholder, search icon */
   --surface-500: 113 128 150; /* email, column title */
   --surface-600: 74 85 104; /* secondary button text */
   --surface-700: 45 55 72; /* name, "0 users selected" */
@@ -124,7 +124,7 @@ body {
 }
 
 :root {
-  --body-bg: rgb(var(--surface-50));
+  --body-bg: rgb(var(--surface-100));
   --body-text-color: rgb(var(--surface-900));
   --card-border: 1px solid var(--border-color);
   --card-bg: rgb(var(--surface-0));
@@ -154,14 +154,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding: 1rem;
-}
-
-.card {
-  background: var(--card-bg);
-  border: var(--card-border);
-  padding: 2rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
 }
 
 @keyframes fadein {
