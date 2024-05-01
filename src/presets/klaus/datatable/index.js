@@ -991,12 +991,11 @@ export default {
           'relative',
 
           // Alignment
-          'inline-flex',
-          'align-bottom',
+          'flex',
 
           // Size
-          'w-6',
-          'h-6',
+          'w-[1.143rem]',
+          'h-[1.143rem]',
 
           // Misc
           'cursor-pointer',
@@ -1011,16 +1010,16 @@ export default {
           'justify-center',
 
           // Size
-          'w-6',
-          'h-6',
+          'w-[1.143rem]',
+          'h-[1.143rem]',
 
           // Shape
-          'rounded-md',
-          'border-2',
+          'rounded-[.2143rem]',
+          'border-[1px]',
 
           // Colors
           {
-            'border-surface-200 bg-surface-0 dark:border-surface-700 dark:bg-surface-900': !context.checked,
+            'border-surface-300 bg-surface-0 dark:border-surface-700 dark:bg-surface-900': !context.checked,
             'border-primary-500 bg-primary-500 dark:border-primary-400 dark:bg-primary-400': context.checked,
           },
 
@@ -1089,12 +1088,11 @@ export default {
           'relative',
 
           // Alignment
-          'inline-flex',
-          'align-bottom',
+          'flex',
 
           // Size
-          'w-6',
-          'h-6',
+          'w-[1.143rem]',
+          'h-[1.143rem]',
 
           // Misc
           'cursor-pointer',
@@ -1109,16 +1107,16 @@ export default {
           'justify-center',
 
           // Size
-          'w-6',
-          'h-6',
+          'w-[1.143rem]',
+          'h-[1.143rem]',
 
           // Shape
-          'rounded-md',
-          'border-2',
+          'rounded-[.2143rem]',
+          'border-[1px]',
 
           // Colors
           {
-            'border-surface-200 bg-surface-0 dark:border-surface-700 dark:bg-surface-900': !context.checked,
+            'border-surface-300 bg-surface-0 dark:border-surface-700 dark:bg-surface-900': !context.checked,
             'border-primary-500 bg-primary-500 dark:border-primary-400 dark:bg-primary-400': context.checked,
           },
 
