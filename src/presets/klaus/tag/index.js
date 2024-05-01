@@ -2,13 +2,13 @@ export default {
   root: ({ props }) => ({
     class: [
       // Font
-      'text-xs font-bold',
+      'text-sm font-medium',
 
       // Alignments
       'inline-flex items-center justify-center',
 
       // Spacing
-      'px-2 py-1',
+      'px-[0.572rem] py-[0.2rem]',
 
       // Shape
       {
@@ -17,18 +17,17 @@ export default {
       },
 
       // Colors
-      'text-white dark:text-surface-900',
       {
-        'bg-primary-500 dark:bg-primary-400': props.severity == null || props.severity == 'primary',
-        'bg-green-500 dark:bg-green-400': props.severity == 'success',
-        'bg-blue-500 dark:bg-blue-400': props.severity == 'info',
-        'bg-orange-500 dark:bg-orange-400': props.severity == 'warning',
-        'bg-red-500 dark:bg-red-400': props.severity == 'danger',
+        'bg-primary-500': props.severity == null || props.severity == 'primary',
+        'bg-violet-100 text-violet-900': props.severity == 'success',
+        'bg-sky-200 text-sky-900': props.severity == 'info',
+        'bg-orange-100 text-amber-800': props.severity == 'warning',
+        'bg-red-100 text-pink-800': props.severity == 'danger',
       },
     ],
   }),
   value: {
-    class: 'leading-normal',
+    class: 'leading-normal font-medium',
   },
   icon: {
     class: 'mr-1 text-sm',
