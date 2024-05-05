@@ -1,6 +1,6 @@
-import Klaus from '@/presets/klaus';
-import Lara from '@/presets/lara';
-import Wind from '@/presets/wind';
+import Klaus from '@/themes/klaus';
+import Lara from '@/themes/lara';
+import Wind from '@/themes/wind';
 import { reactive, watch, type App } from 'vue';
 
 const presetsByName = {

@@ -774,7 +774,7 @@ module.exports = {
     },
     {
       'files': [
-        'src/presets/**/*.js',
+        'src/themes/**/*.js',
       ],
       'rules': {
         'eqeqeq': [
