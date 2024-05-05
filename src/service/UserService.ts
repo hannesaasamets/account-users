@@ -17,12 +17,12 @@ export type QueryParams = {
   sortOrder: 'asc' | 'desc';
   filter: string;
 }
-type FetchUsersResponse = {
+export type FetchUsersResponse = {
   users: User[];
   offset: number;
   limit: number;
-  totalRecords: number;
   sortField: string;
+  totalRecords: number;
 };
 
 export const UserService = {

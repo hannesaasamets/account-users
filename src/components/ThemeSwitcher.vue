@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
   import ThemeConfigurator from '@/components/ThemeConfigurator.vue';
 
   export default {

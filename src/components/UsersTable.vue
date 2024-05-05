@@ -1,15 +1,15 @@
 <template>
   <DataTable
-    :value="users"
+    :value="state.users"
     lazy
     paginator
     edit-mode="row"
     v-model:editingRows="editingRows"
     @row-edit-save="onRowEditSave"
-    :first="queryParams.offset"
+    :first="state.offset"
     :rows="pageSize"
     data-key="id"
-    :total-records="totalRecords"
+    :total-records="state.totalRecords"
     :loading="isLoading"
     @page="onPage"
     @sort="onSort"
@@ -196,7 +196,7 @@
     DataTableSelectAllChangeEvent,
     DataTableSortEvent,
   } from 'primevue/datatable';
-  import { type QueryParams, type User, UserService } from '@/service/UserService';
+  import { type FetchUsersResponse, type QueryParams, type User, UserService } from '@/service/UserService';
   import { roles, rolesByValue } from '@/constants/roles';
   import { tick } from '@/utils';
 
@@ -209,63 +209,70 @@
   const isEditingGlobal = ref(false);
   const globalEditRoles = ref();
   const isLoading = ref(false);
-  const totalRecords = ref(0);
-  const users = ref<User[]>([]);
   const selectedUsers = ref<User[]>([]);
   const editingRows = ref<User[]>([]);
   const pageSize = 9;
-  const queryParams = reactive<QueryParams>({
+  const defaultQueryParams: QueryParams = {
     offset: 0,
     limit: pageSize,
     sortField: 'id',
     sortOrder: 'asc',
-    filter: props.filters.global.value,
+    filter: '',
+  };
+  const state = reactive<FetchUsersResponse>({
+    users: [],
+    offset: defaultQueryParams.offset,
+    limit: defaultQueryParams.limit,
+    sortField: defaultQueryParams.sortField,
+    totalRecords: 0,
   });
 
   onMounted(() => {
     loadPageData();
   });
 
-  const loadPageData = async () => {
-    selectedUsers.value = [];
-    editingRows.value = [];
+  const loadPageData = async (queryParams?: Partial<QueryParams>) => {
     isLoading.value = true;
-    queryParams.limit = pageSize;
 
     await tick(Math.random() * 1000 + 250);
 
-    const response = await UserService.fetchUsers(queryParams);
+    Object.assign(
+      state,
+      await UserService.fetchUsers({
+        ...defaultQueryParams,
+        ...queryParams,
+        filter: props.filters.global.value,
+      }),
+    );
 
-    users.value = response.users;
-    totalRecords.value = +response.totalRecords;
-    queryParams.offset = +response.offset;
-    queryParams.limit = +response.limit;
-
+    selectedUsers.value = [];
+    editingRows.value = [];
     isLoading.value = false;
   };
-  const onPage = (event: DataTablePageEvent) => {
-    queryParams.offset = event.first;
 
-    loadPageData();
+  const onPage = (event: DataTablePageEvent) => {
+    loadPageData({
+      offset: event.first,
+    });
   };
   const onSort = (event: DataTableSortEvent) => {
-    queryParams.sortField = event.sortField as typeof queryParams.sortField;
-    queryParams.sortOrder = event.sortOrder === -1
-      ? 'desc'
-      : 'asc';
-    queryParams.offset = event.first;
-
-    loadPageData();
+    loadPageData({
+      sortField: (event.sortField as QueryParams['sortField']),
+      sortOrder: event.sortOrder === -1
+        ? 'desc'
+        : 'asc',
+      offset: event.first,
+    });
   };
   const onSelectAllChange = (event: DataTableSelectAllChangeEvent) => {
     selectedUsers.value = event.checked
-      ? users.value
+      ? state.users
       : [];
   };
   const allPageItemsSelected = computed(() =>
-    selectedUsers.value.length === users.value.length);
+    selectedUsers.value.length === state.users.length);
   const onRowEditSave = async ({ newData, index }: DataTableRowEditSaveEvent) => {
-    users.value[index] = await UserService.editUser(newData);
+    state.users[index] = await UserService.editUser(newData);
 
     setGlobalEditRolesIfSameSelected();
   };
@@ -279,7 +286,7 @@
 
     const persistedUsers = await UserService.editUsers(editedUsers);
 
-    users.value.forEach(user => Object.assign(
+    state.users.forEach(user => Object.assign(
       user,
       persistedUsers.find(({ id }) => id === user.id),
     ));
@@ -299,9 +306,9 @@
     setGlobalEditRolesIfSameSelected();
   };
   const setGlobalEditRolesIfSameSelected = () => {
-    const firstRole = users.value.find(({ id }) => id === selectedUsers.value[0].id)?.role;
+    const firstRole = state.users.find(({ id }) => id === selectedUsers.value[0].id)?.role;
     const allSelectedWithSameRole = selectedUsers.value.every(selectedUser =>
-      users.value.find(({ id }) => id === selectedUser.id)?.role === firstRole);
+      state.users.find(({ id }) => id === selectedUser.id)?.role === firstRole);
 
     globalEditRoles.value = allSelectedWithSameRole
       ? firstRole
@@ -316,8 +323,6 @@
     }
   });
   watch(props.filters.global, () => {
-    queryParams.filter = props.filters.global.value;
-
     loadPageData();
   });
 </script>

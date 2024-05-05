@@ -49,8 +49,17 @@
   </div>
 </template>
 
-<script>
-  export default {
+<script lang="ts">
+  import { defineComponent } from 'vue';
+
+  type ThemeName = 'klaus' | 'lara' | 'wind';
+  type This = {
+    $appState: {
+      preset: ThemeName;
+    };
+  }
+
+  export default defineComponent({
     name: 'theme-configurator',
     data() {
       return {
@@ -60,13 +69,13 @@
     },
     computed: {
       isKlaus() {
-        return this.$appState.preset === 'klaus';
+        return (this as unknown as This).$appState.preset === 'klaus';
       },
       isLara() {
-        return this.$appState.preset === 'lara';
+        return (this as unknown as This).$appState.preset === 'lara';
       },
       isWind() {
-        return this.$appState.preset === 'wind';
+        return (this as unknown as This).$appState.preset === 'wind';
       },
     },
     mounted() {
@@ -84,9 +93,9 @@
         this.isDark = root.classList.contains('dark');
         this.iconClass = this.iconClass === 'pi-moon' ? 'pi-sun' : 'pi-moon';
       },
-      setPreset(preset) {
-        this.$appState.preset = preset;
+      setPreset(preset: ThemeName) {
+        (this as unknown as This).$appState.preset = preset;
       },
     },
-  };
+  });
 </script>
