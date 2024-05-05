@@ -132,7 +132,7 @@ export default {
         // Color
         (props.sortable === '' || props.sortable) && context.sorted ? 'text-primary-700' : 'text-surface-700',
         (props.sortable === '' || props.sortable) && context.sorted ? 'dark:text-white dark:bg-primary-400/30' : 'dark:text-white/80 dark:bg-surface-800',
-        'border-surface-200 dark:border-surface-700 ',
+        'border-surface-200 dark:border-surface-800 ',
 
         'first:border-l-4 first:border-surface-0',
 
@@ -199,7 +199,7 @@ export default {
         },
 
         // Color
-        'border-surface-0 dark:border-surface-700',
+        'border-surface-0 dark:border-surface-800',
 
         'first:transition-colors last:transition-colors first:border-b-0 last:border-b-0',
         'first:border-l-4 first:rounded-l',
@@ -1203,7 +1203,7 @@ export default {
         'focus:outline-none focus:outline-offset-0': context.selectable,
       },
       {
-        'hover:bg-surface-50': props.selectionMode && !context.selected,
+        'hover:bg-surface-50 dark:hover:bg-surface-700': props.selectionMode && !context.selected,
       },
 
       // Transition

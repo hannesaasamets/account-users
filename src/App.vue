@@ -245,7 +245,7 @@
       matchMode: FilterMatchMode.CONTAINS,
     },
   });
-  const pageSize = 8;
+  const pageSize = 9;
   const queryParams = reactive<QueryParams>({
     offset: 0,
     limit: pageSize,
@@ -367,6 +367,10 @@
   tr[data-p-highlight="false"]:hover > td:first-child,
   tr[data-p-highlight="false"]:hover > td:last-child {
     border-color: rgb(var(--surface-50));
+  }
+  .dark tr[data-p-highlight="false"]:hover > td:first-child,
+  .dark tr[data-p-highlight="false"]:hover > td:last-child {
+    border-color: rgb(var(--surface-700));
   }
   @media (hover: hover) {
     .visible-on-row-hover {

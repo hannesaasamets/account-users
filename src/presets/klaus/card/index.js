@@ -5,7 +5,7 @@ export default {
       'rounded-lg',
 
       // Color
-      'bg-surface-0 dark:bg-surface-900',
+      'bg-surface-0 dark:bg-surface-800',
       'text-surface-700 dark:text-surface-0',
     ],
   },
