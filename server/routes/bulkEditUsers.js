@@ -1,11 +1,14 @@
-export default (users) => async (request, reply) => {
-  const { body } = request;
+import store from '../store.js';
 
-  body.forEach(updatedUser => {
-    const user = users.find(({ id }) => id === updatedUser.id);
+export default async (request, reply) => {
+  const { users } = store;
+  const { body: updatedUsers } = request;
 
-    Object.assign(user, updatedUser);
+  updatedUsers.forEach(userUpdates => {
+    const user = users.find(({ id }) => id === userUpdates.id);
+
+    Object.assign(user, userUpdates);
   });
 
-  reply.send(body);
+  reply.send(updatedUsers);
 };

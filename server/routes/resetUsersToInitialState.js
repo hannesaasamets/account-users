@@ -1,7 +1,8 @@
 import Users from '../users.js';
+import store from '../store.js';
 
-export default (users) => async (request, reply) => {
-  users.length = 0;
-  users.push(...structuredClone(Users));
+export default async (request, reply) => {
+  store.users = structuredClone(Users);
+
   reply.code(200).send();
 };

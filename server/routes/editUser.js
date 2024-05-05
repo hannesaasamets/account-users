@@ -1,4 +1,7 @@
-export default (users) => async (request, reply) => {
+import store from '../store.js';
+
+export default async (request, reply) => {
+  const { users } = store;
   const { userId } = request.params;
   const { body } = request;
 

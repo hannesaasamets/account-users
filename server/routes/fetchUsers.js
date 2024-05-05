@@ -1,6 +1,8 @@
 import { filterByValuesCaseInsensitive, sortCaseInsensitive } from '../utils.js';
+import store from '../store.js';
 
-export default (users) => async (request, reply) => {
+export default async (request, reply) => {
+  const { users } = store;
   const {
     offset = 0,
     limit = users.length,
