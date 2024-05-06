@@ -81,6 +81,9 @@
     mounted() {
       const root = document.getElementsByTagName('html')[0];
 
+      root.classList.remove('light');
+      root.classList.remove('dark');
+
       this.isDark = root.classList.contains('dark');
     },
     methods: {
